@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>C Logic Showcase - NutriPlan (Annotated)</title>
+
+<!-- Highlight.js -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+<!-- Tippy.js (tooltips) -->
+<script src="https://unpkg.com/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+<script src="https://unpkg.com/tippy.js@6.3.7/dist/tippy-bundle.umd.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/tippy.js@6.3.7/dist/tippy.css">
+
+<style>
+/* --- Basic site styles (kept & polished) --- */
+:root{
+  --accent-1:#6C5CE7; --accent-2:#A29BFE; --accent-3:#4ECDC4; --warm:#FF6B6B;
+  --muted:#636E72; --card-shadow:0 8px 30px rgba(16,24,40,0.06);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg,#F8F9FA 0%, #E8F5F3 100%);
+  color:#1f2937; line-height:1.45; -webkit-font-smoothing:antialiased;
+}
+
+/* Nav */
+nav{
+  position:sticky; top:0; z-index:40; padding:14px 22px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(255,255,255,0.78));
+  backdrop-filter: blur(6px);
+  box-shadow:0 6px 20px rgba(16,24,40,0.03);
+}
+.nav-container{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center}
+.logo{font-weight:800;background:linear-gradient(135deg,var(--warm),#FFB84D);-webkit-background-clip:text;-webkit-text-fill-color:transparent;cursor:pointer}
+.nav-links{display:flex;gap:14px}
+.nav-links a{text-decoration:none;color:var(--muted);font-weight:600}
+.nav-links a:hover{color:var(--warm)}
+
+/* Hero */
+.hero{max-width:1200px;margin:22px auto;padding:26px;border-radius:14px;background:linear-gradient(135deg,var(--accent-3),#95E1D3);color:#053023;box-shadow:0 10px 30px rgba(78,205,196,0.06);display:flex;gap:20px;align-items:center}
+.hero h1{font-size:1.6rem;margin-bottom:6px}
+.hero p{opacity:0.95}
+
+/* Container & card */
+.container{max-width:1200px;margin:18px auto;padding:0 20px}
+.dsa-section{background:white;border-radius:16px;padding:24px;margin-bottom:20px;box-shadow:var(--card-shadow);scroll-margin-top:100px}
+.section-header{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.section-title{font-size:1.5rem;font-weight:800;display:flex;align-items:center;gap:10px}
+.download-btn{background:linear-gradient(135deg,var(--warm),#FFB84D);color:white;padding:8px 12px;border-radius:10px;text-decoration:none;font-weight:700}
+
+/* code block */
+.code-block{margin-top:12px;border-radius:10px;overflow:hidden;border:1px solid rgba(0,0,0,0.06)}
+.code-block pre{margin:0;padding:14px;overflow:auto;background:#0b1220;color:#e6eef7;font-size:0.9rem;line-height:1.6}
+
+/* tooltip trigger style inside code */
+.tooltip-trigger{
+  background: linear-gradient(90deg, rgba(108,92,231,0.08), rgba(78,205,196,0.04));
+  border-bottom: 2px dotted rgba(108,92,231,0.6);
+  cursor:help;
+  border-radius:3px;
+  padding:0 3px;
+  display:inline-block;
+}
+
+/* tippy theme */
+.tippy-box[data-theme~='nutriplan']{background:linear-gradient(135deg,var(--accent-1),var(--accent-2));color:white;border-radius:10px;padding:8px 10px;box-shadow:0 6px 30px rgba(16,24,40,0.18)}
+.tippy-arrow{color:transparent}
+
+/* example content */
+.example-section{background:linear-gradient(135deg,#FFF5E5,#FFEFEF);padding:14px;border-radius:10px;margin-top:12px}
+.example-content{font-family: 'Courier New', monospace;white-space:pre-wrap;background:white;padding:12px;border-radius:8px}
+
+/* jump nav */
+.jump-nav{background:white;padding:14px;border-radius:12px;margin:12px 0;box-shadow:var(--card-shadow)}
+.jump-links{display:flex;gap:8px;flex-wrap:wrap}
+.jump-btn{background:linear-gradient(135deg,var(--accent-3),#95E1D3);color:white;padding:8px 12px;border-radius:8px;text-decoration:none;font-weight:700}
+
+/* responsive */
+@media(max-width:820px){
+  .hero{flex-direction:column;align-items:flex-start}
+  .section-title{font-size:1.2rem}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-container">
+    <div class="logo" onclick="location.href='index.html'">NutriPlan</div>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="meals.html">Meals</a>
+      <a href="progress.html">Progress</a>
+      <a href="contact.html">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" aria-labelledby="hero-title">
+  <div>
+    <h1 id="hero-title">C Logic — Annotated</h1>
+    <p>Hover keywords in the code to learn: functions, structs, typedefs, and algorithm hints — inline and contextual.</p>
+  </div>
+  <div style="min-width:160px;padding:8px;border-radius:10px;background:rgba(255,255,255,0.8);text-align:center;font-weight:700">Interactive Code</div>
+</section>
+
+<!-- Jump nav -->
+<div class="container">
+  <div class="jump-nav">
+    <h3 style="text-align:center;margin-bottom:8px">Quick Jump</h3>
+    <div class="jump-links">
+      <a href="#bst" class="jump-btn">Binary Search Tree</a>
+      <a href="#priority-queue" class="jump-btn">Priority Queue</a>
+      <a href="#stack" class="jump-btn">Stack</a>
+      <a href="#linked-list" class="jump-btn">Linked List</a>
+      <a href="#graph" class="jump-btn">Graph</a>
+    </div>
+  </div>
+
+  <!-- BST -->
+  <section id="bst" class="dsa-section">
+    <div class="section-header">
+      <div class="section-title"><span>🌳</span> Binary Search Tree</div>
+      <a class="download-btn" href="#" onclick="downloadCode('bst'); return false;">Download tree.c</a>
+    </div>
+
+    <p class="description" style="color:var(--muted);margin-top:10px">
+      Organizes foods by calorie values allowing range queries and fast lookup. Hover function names and types to learn more.
+    </p>
+
+    <div class="code-section">
+      <div class="code-block">
+        <pre><code class="language-c">// Binary Search Tree for Food Database
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+
+typedef struct FoodNode {
+    char name[50];
+    int calories;
+    float protein;
+    struct FoodNode *left;
+    struct FoodNode *right;
+} FoodNode;
+
+FoodNode* createNode(char *name, int calories, float protein) {
+    FoodNode *newNode = (FoodNode*)malloc(sizeof(FoodNode));
+    strcpy(newNode->name, name);
+    newNode->calories = calories;
+    newNode->protein = protein;
+    newNode->left = NULL;
+    newNode->right = NULL;
+    return newNode;
+}
+
+FoodNode* insertFood(FoodNode *root, char *name, int cal, float protein) {
+    if (root == NULL) {
+        return createNode(name, cal, protein);
+    }
+    
+    if (cal &lt; root->calories) {
+        root->left = insertFood(root->left, name, cal, protein);
+    } else {
+        root->right = insertFood(root->right, name, cal, protein);
+    }
+    
+    return root;
+}
+
+void searchInRange(FoodNode *root, int minCal, int maxCal) {
+    if (root == NULL) return;
+    
+    if (minCal &lt; root->calories) {
+        searchInRange(root->left, minCal, maxCal);
+    }
+    
+    if (root->calories >= minCal && root->calories <= maxCal) {
+        printf("%s: %d kcal | P:%.1fg\n", root->name, root->calories, root->protein);
+    }
+    
+    if (maxCal &gt; root->calories) {
+        searchInRange(root->right, minCal, maxCal);
+    }
+}
+
+int main() {
+    FoodNode *root = NULL;
+    
+    root = insertFood(root, "Paneer Bhurji", 265, 18.5);
+    root = insertFood(root, "Dal Tadka", 180, 12.0);
+    root = insertFood(root, "Chicken Curry", 380, 32.0);
+    
+    printf("=== Weight Loss Range (150-300 kcal) ===\n");
+    searchInRange(root, 150, 300);
+    
+    return 0;
+}</code></pre>
+      </div>
+    </div>
+
+    <div class="example-section">
+      <h4>Example Output</h4>
+      <div class="example-content">=== Weight Loss Range (150-300 kcal) ===
+Dal Tadka: 180 kcal | P:12.0g
+Paneer Bhurji: 265 kcal | P:18.5g</div>
+    </div>
+  </section>
+
+  <!-- Priority Queue -->
+  <section id="priority-queue" class="dsa-section">
+    <div class="section-header">
+      <div class="section-title"><span>⚡</span> Priority Queue (Max Heap)</div>
+      <a class="download-btn" href="#" onclick="downloadCode('priority-queue'); return false;">Download priority_queue.c</a>
+    </div>
+
+    <p class="description" style="color:var(--muted);margin-top:10px">
+      Ranks meals by a nutrition "score" (goal-aware). Top results power the Meal Suggestions UI.
+    </p>
+
+    <div class="code-section">
+      <div class="code-block">
+<pre><code class="language-c">// Priority Queue for Meal Ranking
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#define MAX_SIZE 100
+
+typedef struct {
+    char name[50];
+    int calories;
+    float protein;
+    int score;
+} Meal;
+
+typedef struct {
+    Meal heap[MAX_SIZE];
+    int size;
+} PriorityQueue;
+
+void initPQ(PriorityQueue *pq) {
+    pq->size = 0;
+}
+
+void heapifyUp(PriorityQueue *pq, int index) {
+    if (index == 0) return;
+    int parent = (index - 1) / 2;
+    
+    if (pq->heap[index].score > pq->heap[parent].score) {
+        Meal temp = pq->heap[index];
+        pq->heap[index] = pq->heap[parent];
+        pq->heap[parent] = temp;
+        heapifyUp(pq, parent);
+    }
+}
+
+void insertMeal(PriorityQueue *pq, char *name, int cal, float protein, int score) {
+    Meal newMeal;
+    strcpy(newMeal.name, name);
+    newMeal.calories = cal;
+    newMeal.protein = protein;
+    newMeal.score = score;
+    
+    pq->heap[pq->size] = newMeal;
+    heapifyUp(pq, pq->size);
+    pq->size++;
+}
+
+Meal extractMax(PriorityQueue *pq) {
+    Meal maxMeal = pq->heap[0];
+    pq->heap[0] = pq->heap[pq->size - 1];
+    pq->size--;
+    return maxMeal;
+}
+
+int main() {
+    PriorityQueue pq;
+    initPQ(&pq);
+    
+    insertMeal(&pq, "Chicken Curry", 380, 32.0, 58);
+    insertMeal(&pq, "Paneer Bhurji", 265, 18.5, 29);
+    insertMeal(&pq, "Dal Tadka", 180, 12.0, 18);
+    
+    printf("TOP 3 Meals:\n");
+    for (int i = 1; i <= 3; i++) {
+        Meal best = extractMax(&pq);
+        printf("#%d: %s (Score: %d)\n", i, best.name, best.score);
+    }
+    
+    return 0;
+}</code></pre>
+      </div>
+    </div>
+
+    <div class="example-section">
+      <h4>Example Output</h4>
+      <div class="example-content">TOP 3 Meals:
+#1: Chicken Curry (Score: 58)
+#2: Paneer Bhurji (Score: 29)
+#3: Dal Tadka (Score: 18)</div>
+    </div>
+  </section>
+
+  <!-- STACK -->
+  <section id="stack" class="dsa-section">
+    <div class="section-header">
+      <div class="section-title"><span>📚</span> Stack (LIFO)</div>
+      <a class="download-btn" href="#" onclick="downloadCode('stack'); return false;">Download stack.c</a>
+    </div>
+
+    <p class="description" style="color:var(--muted);margin-top:10px">
+      Tracks cheat meals — push when you cheat, pop to undo your last cheat.
+    </p>
+
+    <div class="code-section">
+      <div class="code-block">
+<pre><code class="language-c">// Stack for Cheat Meal Tracking
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#define MAX_STACK 50
+
+typedef struct {
+    char name[50];
+    int calories;
+} CheatMeal;
+
+typedef struct {
+    CheatMeal items[MAX_STACK];
+    int top;
+} CheatStack;
+
+void initStack(CheatStack *stack) {
+    stack->top = -1;
+}
+
+void push(CheatStack *stack, char *name, int calories) {
+    if (stack->top == MAX_STACK - 1) {
+        printf("Stack overflow!\n");
+        return;
+    }
+    
+    stack->top++;
+    CheatMeal *cheat = &stack->items[stack->top];
+    strcpy(cheat->name, name);
+    cheat->calories = calories;
+    
+    printf("Pushed: %s (%d kcal)\n", name, calories);
+}
+
+CheatMeal pop(CheatStack *stack) {
+    CheatMeal empty = {"", 0};
+    
+    if (stack->top == -1) {
+        printf("Stack is empty!\n");
+        return empty;
+    }
+    
+    CheatMeal removed = stack->items[stack->top];
+    stack->top--;
+    
+    printf("Popped: %s (%d kcal)\n", removed.name, removed.calories);
+    return removed;
+}
+
+int main() {
+    CheatStack sinStack;
+    initStack(&sinStack);
+    
+    push(&sinStack, "Pizza", 700);
+    push(&sinStack, "Burger", 550);
+    push(&sinStack, "Maggi", 400);
+    
+    pop(&sinStack);
+    pop(&sinStack);
+    
+    return 0;
+}</code></pre>
+      </div>
+    </div>
+
+    <div class="example-section">
+      <h4>Example Output</h4>
+      <div class="example-content">Pushed: Pizza (700 kcal)
+Pushed: Burger (550 kcal)
+Pushed: Maggi (400 kcal)
+Popped: Maggi (400 kcal)
+Popped: Burger (550 kcal)</div>
+    </div>
+  </section>
+
+  <!-- Linked List -->
+  <section id="linked-list" class="dsa-section">
+    <div class="section-header">
+      <div class="section-title"><span>🔗</span> Linked List</div>
+      <a class="download-btn" href="#" onclick="downloadCode('linked-list'); return false;">Download linked_list.c</a>
+    </div>
+
+    <p class="description" style="color:var(--muted);margin-top:10px">
+      Manages recipe steps; insert, delete or modify instructions dynamically.
+    </p>
+
+    <div class="code-section">
+      <div class="code-block">
+<pre><code class="language-c">// Linked List for Recipe Management
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+
+typedef struct StepNode {
+    int stepNumber;
+    char instruction[200];
+    struct StepNode *next;
+} StepNode;
+
+StepNode* createStep(int number, char *instruction) {
+    StepNode *newStep = (StepNode*)malloc(sizeof(StepNode));
+    newStep->stepNumber = number;
+    strcpy(newStep->instruction, instruction);
+    newStep->next = NULL;
+    return newStep;
+}
+
+void insertAtEnd(StepNode **head, int number, char *instruction) {
+    StepNode *newStep = createStep(number, instruction);
+    
+    if (*head == NULL) {
+        *head = newStep;
+        return;
+    }
+    
+    StepNode *temp = *head;
+    while (temp->next != NULL) {
+        temp = temp->next;
+    }
+    temp->next = newStep;
+}
+
+void displayRecipe(StepNode *head, char *recipeName) {
+    printf("\n=== Recipe: %s ===\n", recipeName);
+    
+    StepNode *temp = head;
+    int count = 1;
+    
+    while (temp != NULL) {
+        printf("Step %d: %s\n", count, temp->instruction);
+        temp = temp->next;
+        count++;
+    }
+}
+
+int main() {
+    StepNode *paneerRecipe = NULL;
+    
+    insertAtEnd(&paneerRecipe, 1, "Crumble paneer into small pieces");
+    insertAtEnd(&paneerRecipe, 2, "Heat oil in pan");
+    insertAtEnd(&paneerRecipe, 3, "Add onions and tomatoes");
+    insertAtEnd(&paneerRecipe, 4, "Add paneer and spices");
+    insertAtEnd(&paneerRecipe, 5, "Serve hot with roti");
+    
+    displayRecipe(paneerRecipe, "Paneer Bhurji");
+    
+    return 0;
+}</code></pre>
+      </div>
+    </div>
+
+    <div class="example-section">
+      <h4>Example Output</h4>
+      <div class="example-content">=== Recipe: Paneer Bhurji ===
+Step 1: Crumble paneer into small pieces
+Step 2: Heat oil in pan
+Step 3: Add onions and tomatoes
+Step 4: Add paneer and spices
+Step 5: Serve hot with roti</div>
+    </div>
+  </section>
+
+  <!-- Graph -->
+  <section id="graph" class="dsa-section">
+    <div class="section-header">
+      <div class="section-title"><span>🕸️</span> Graph (Adjacency List)</div>
+      <a class="download-btn" href="#" onclick="downloadCode('graph'); return false;">Download graph.c</a>
+    </div>
+
+    <p class="description" style="color:var(--muted);margin-top:10px">
+      Substitution network: find alternatives with BFS when the user requests a swap.
+    </p>
+
+    <div class="code-section">
+      <div class="code-block">
+<pre><code class="language-c">// Graph for Food Substitution Network
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+#define MAX_FOODS 50
+
+typedef struct Food {
+    char name[50];
+    int calories;
+    float protein;
+} Food;
+
+typedef struct AdjNode {
+    int foodIndex;
+    struct AdjNode *next;
+} AdjNode;
+
+typedef struct {
+    Food foods[MAX_FOODS];
+    AdjNode *adjList[MAX_FOODS];
+    int numFoods;
+} FoodGraph;
+
+void initGraph(FoodGraph *graph) {
+    graph->numFoods = 0;
+    for (int i = 0; i < MAX_FOODS; i++) {
+        graph->adjList[i] = NULL;
+    }
+}
+
+int addFood(FoodGraph *graph, char *name, int cal, float protein) {
+    int index = graph->numFoods;
+    strcpy(graph->foods[index].name, name);
+    graph->foods[index].calories = cal;
+    graph->foods[index].protein = protein;
+    graph->numFoods++;
+    return index;
+}
+
+void addEdge(FoodGraph *graph, int food1, int food2) {
+    AdjNode *newNode = (AdjNode*)malloc(sizeof(AdjNode));
+    newNode->foodIndex = food2;
+    newNode->next = graph->adjList[food1];
+    graph->adjList[food1] = newNode;
+    
+    newNode = (AdjNode*)malloc(sizeof(AdjNode));
+    newNode->foodIndex = food1;
+    newNode->next = graph->adjList[food2];
+    graph->adjList[food2] = newNode;
+}
+
+void findSubstitutes(FoodGraph *graph, int foodIndex) {
+    int visited[MAX_FOODS] = {0};
+    int queue[MAX_FOODS];
+    int front = 0, rear = 0;
+    
+    queue[rear++] = foodIndex;
+    visited[foodIndex] = 1;
+    
+    printf("\nSubstitutes for %s:\n", graph->foods[foodIndex].name);
+    
+    while (front < rear) {
+        int current = queue[front++];
+        AdjNode *temp = graph->adjList[current];
+        
+        while (temp != NULL) {
+            int adjFood = temp->foodIndex;
+            if (!visited[adjFood]) {
+                visited[adjFood] = 1;
+                queue[rear++] = adjFood;
+                printf("- %s (%d kcal, %.1fg protein)\n",
+                       graph->foods[adjFood].name,
+                       graph->foods[adjFood].calories,
+                       graph->foods[adjFood].protein);
+            }
+            temp = temp->next;
+        }
+    }
+}
+
+int main() {
+    FoodGraph graph;
+    initGraph(&graph);
+    
+    int paneer = addFood(&graph, "Paneer Bhurji", 265, 18.5);
+    int tofu = addFood(&graph, "Tofu Scramble", 180, 15.0);
+    int chicken = addFood(&graph, "Chicken Curry", 380, 32.0);
+    int egg = addFood(&graph, "Egg Curry", 350, 20.0);
+    
+    addEdge(&graph, paneer, tofu);
+    addEdge(&graph, paneer, egg);
+    addEdge(&graph, chicken, egg);
+    
+    findSubstitutes(&graph, paneer);
+    
+    return 0;
+}</code></pre>
+      </div>
+    </div>
+
+    <div class="example-section">
+      <h4>Example Output</h4>
+      <div class="example-content">Substitutes for Paneer Bhurji:
+- Tofu Scramble (180 kcal, 15.0g protein)
+- Egg Curry (350 kcal, 20.0g protein)</div>
+    </div>
+  </section>
+
+  <!-- footer -->
+  <footer style="text-align:center;margin-top:18px;padding:18px;background:#111827;border-radius:10px;color:#fff">
+    <div>Contact: <a href="mailto:nutriplan.support@gmail.com" style="color:#9AE6B4">nutriplan.support@gmail.com</a></div>
+    <div style="opacity:0.85;margin-top:6px">© 2024 NutriPlan — Built by Shradha</div>
+  </footer>
+</div>
+
+<script>
+/*
+  Strategy:
+  1) Call highlightAll() to let highlight.js color the code.
+  2) Walk each code block's DOM text nodes and safely replace only text occurrences
+     of tokens (function names, structs, typedefs, etc.) with <span class="tooltip-trigger" data-tooltip="...">token</span>.
+  3) Initialize tippy() on the inserted spans.
+
+  Replacing occurs only inside TEXT NODES to avoid breaking existing <span> wrappers created by highlight.js.
+*/
+
+/* ---------- Tooltip map: edit to change tooltip text ---------- */
+const TOOLTIP_MAP = {
+  // BST
+  "FoodNode": "Struct representing a food item (name, calories, protein). Acts as tree node.",
+  "createNode": "Allocates a new FoodNode and initializes fields. Time: O(1).",
+  "insertFood": "Inserts a food node into BST by calorie value. Avg Time: O(log n).",
+  "searchInRange": "Recursively searches and prints foods in calorie range. Useful for suggestions.",
+
+  // Priority Queue
+  "PriorityQueue": "Container for max-heap of Meal items; stores heap array and size.",
+  "Meal": "Struct representing a meal (name, calories, protein, score).",
+  "initPQ": "Initializes priority queue (sets size to 0).",
+  "heapifyUp": "Restores max-heap property by bubbling an inserted node up. Time: O(log n).",
+  "insertMeal": "Inserts a Meal into the heap with its nutrition score.",
+  "extractMax": "Removes and returns the highest-scored Meal (top recommendation).",
+
+  // Stack
+  "CheatMeal": "Struct holding a cheat meal record (name & calories).",
+  "CheatStack": "Stack container used for tracking cheat meals with top index.",
+  "initStack": "Initializes stack (sets top to -1).",
+  "push": "Pushes a cheat meal onto the stack. O(1).",
+  "pop": "Pops the most recent cheat meal (undo last cheat). O(1).",
+
+  // Linked List
+  "StepNode": "Linked list node for recipe steps (stepNumber, instruction, next).",
+  "createStep": "Allocates a new StepNode for a recipe step. O(1).",
+  "insertAtEnd": "Appends a step at the end of the linked list. O(n) traversal.",
+  "displayRecipe": "Prints the entire recipe steps sequentially.",
+
+  // Graph
+  "Food": "Struct representing a vertex in substitution graph (name, calories, protein).",
+  "AdjNode": "Node used in adjacency lists representing an edge to a food index.",
+  "FoodGraph": "Graph structure storing foods[] and adjacency lists for substitutions.",
+  "initGraph": "Initializes FoodGraph (clears adjacency lists).",
+  "addFood": "Adds a food node to the graph and returns its index.",
+  "addEdge": "Creates a bidirectional edge between two food vertices.",
+  "findSubstitutes": "Breadth-first search to find substitute foods (BFS: O(V+E))."
+};
+
+/* Prepare token list - longer tokens first to avoid partial matches */
+const TOKENS = Object.keys(TOOLTIP_MAP).sort((a,b) => b.length - a.length);
+
+/* Utility: walk DOM and operate on text nodes */
+function walkTextNodes(root, callback) {
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null, false);
+  let node;
+  const toProcess = [];
+  while (node = walker.nextNode()) {
+    toProcess.push(node);
+  }
+  toProcess.forEach(n => callback(n));
+}
+
+/* Wrap a text segment in a DOM span with tooltip attributes */
+function createTooltipSpan(doc, text, title) {
+  const span = doc.createElement('span');
+  span.className = 'tooltip-trigger';
+  span.setAttribute('data-tooltip', title);
+  span.textContent = text;
+  return span;
+}
+
+/* Replace token occurrences safely in text nodes */
+function annotateCodeBlock(codeEl) {
+  // We will mutate text nodes: for each text node, look for first occurrence of any token.
+  // When found: split the text node into before + span + after, then continue scanning the after node.
+  const doc = codeEl.ownerDocument;
+  walkTextNodes(codeEl, (textNode) => {
+    // skip if node is only whitespace
+    if (!textNode.nodeValue || !textNode.nodeValue.trim()) return;
+
+    let currentNode = textNode;
+    let safetyCounter = 0;
+    // Iterate repeatedly to catch multiple tokens in the same text node (after splitting)
+    while (currentNode && safetyCounter < 200) {
+      safetyCounter++;
+      const text = currentNode.nodeValue;
+      let found = false;
+      // For each token, search for word-boundary match
+      for (let i = 0; i < TOKENS.length; i++) {
+        const token = TOKENS[i];
+        const regex = new RegExp('\\b' + token + '\\b');
+        const match = regex.exec(text);
+        if (match) {
+          found = true;
+          const idx = match.index;
+          const before = text.slice(0, idx);
+          const matchedText = match[0];
+          const after = text.slice(idx + matchedText.length);
+
+          // create nodes
+          if (before.length > 0) {
+            const beforeNode = doc.createTextNode(before);
+            currentNode.parentNode.insertBefore(beforeNode, currentNode);
+          }
+
+          const span = createTooltipSpan(doc, matchedText, TOOLTIP_MAP[token] || token);
+          currentNode.parentNode.insertBefore(span, currentNode);
+
+          // remaining text node becomes 'after'
+          if (after.length > 0) {
+            const afterNode = doc.createTextNode(after);
+            currentNode.parentNode.insertBefore(afterNode, currentNode);
+            // set currentNode to afterNode to continue searching
+            currentNode.nodeValue = ''; // clear current marker node
+            currentNode = afterNode;
+          } else {
+            // no after text, remove current node and break
+            currentNode.parentNode.removeChild(currentNode);
+            currentNode = null;
+          }
+          break; // token processed, restart outer while on the new currentNode
+        }
+      }
+      if (!found) break;
+    }
+  });
+}
+
+/* Initialize: highlight, annotate, and attach tippy */
+function initAnnotatedCode() {
+  // 1) Highlight all code
+  if (window.hljs && hljs.highlightAll) {
+    hljs.highlightAll();
+  }
+
+  // 2) For each code block, annotate
+  const codeBlocks = document.querySelectorAll('pre code.language-c, pre code.language-cpp, pre code.language-clang');
+  codeBlocks.forEach(codeEl => {
+    // annotate on the ELEMENT that highlight.js produced (HTML inside code)
+    annotateCodeBlock(codeEl);
+  });
+
+  // 3) Initialize tippy on generated spans
+  tippy('.tooltip-trigger', {
+    content(reference) {
+      // Use the data-tooltip content
+      return reference.getAttribute('data-tooltip') || '';
+    },
+    theme: 'nutriplan',
+    allowHTML: false,
+    placement: 'top',
+    animation: 'scale',
+    duration: [180, 140],
+    maxWidth: 420,
+    interactive: true
+  });
+}
+
+/* Download code (simple blob of the cleaned code shown on the page) */
+function downloadCode(key) {
+  const contentMapping = {
+    'bst': document.querySelector('#bst pre code').innerText,
+    'priority-queue': document.querySelector('#priority-queue pre code').innerText,
+    'stack': document.querySelector('#stack pre code').innerText,
+    'linked-list': document.querySelector('#linked-list pre code').innerText,
+    'graph': document.querySelector('#graph pre code').innerText
+  };
+  const content = contentMapping[key] || '// Code not found';
+  const blob = new Blob([content], {type: 'text/plain'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = key + '.c';
+  document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+}
+
+/* Wait for DOM loaded, small timeout to ensure highlight renders, then init */
+document.addEventListener('DOMContentLoaded', () => {
+  // use a small timeout to allow highlight.js to finish rendering in browsers where it is async
+  setTimeout(initAnnotatedCode, 60);
+});
+</script>
+</body>
+</html>

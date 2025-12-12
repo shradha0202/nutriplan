@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - NutriPlan</title>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #F5F7FA;
+            color: #2D3436;
+            overflow-x: hidden;
+        }
+
+        /* Navbar */
+        nav {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(12px);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0; z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        }
+        .nav-container { max-width: 1350px; margin: auto; display: flex; align-items: center; justify-content: space-between; }
+        .logo {
+            font-size: 1.8rem; font-weight: 700;
+            background: linear-gradient(135deg,#FF6B6B,#FFB84D);
+            -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+            cursor: pointer;
+        }
+        .nav-links { display: flex; gap: 2rem; }
+        .nav-links a { text-decoration: none; color: #2D3436; font-weight: 500; }
+        .nav-links a:hover { color:#FF6B6B; }
+
+        /* Hero Section with real image */
+        .hero {
+            position: relative;
+            background: url('https://images.unsplash.com/photo-1556911220-bff31c812dba?auto=format&fit=crop&w=1400&q=60') center/cover no-repeat;
+            height: 300px;
+            color: white;
+            display:flex;
+            flex-direction:column;
+            justify-content:center;
+            text-align:center;
+            padding: 2rem;
+        }
+        .hero::after {
+            content:"";
+            position:absolute; inset:0;
+            background:rgba(0,0,0,0.45);
+        }
+        .hero h1, .hero p {
+            position: relative;
+            z-index: 5;
+        }
+        .hero h1 { font-size: 3rem; font-weight: 800; }
+        .hero p { font-size: 1.2rem; margin-top: 0.5rem; }
+
+        /* Grid */
+        .container {
+            max-width: 1200px; margin: 3rem auto;
+            padding: 1rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+        }
+
+        /* Contact Form */
+        .contact-form {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow:0 8px 25px rgba(0,0,0,0.08);
+        }
+        .form-title { font-size: 2rem; margin-bottom: 0.7rem; }
+        .form-subtitle { color:#636E72; margin-bottom: 1.5rem; }
+
+        .form-group { margin-bottom: 1.4rem; }
+        .form-group label { font-weight: 600; margin-bottom: 0.4rem; display: block; }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #E0E6EB;
+            border-radius: 12px;
+            font-size: 1rem;
+        }
+        input:focus, textarea:focus, select:focus {
+            border-color:#6C5CE7;
+            outline:none;
+            box-shadow:0 0 4px rgba(108,92,231,0.4);
+        }
+        textarea { resize: vertical; min-height: 140px; }
+
+        .submit-btn {
+            width:100%; padding:1rem;
+            background:linear-gradient(135deg,#6C5CE7,#A29BFE);
+            color:white; border:none; border-radius:12px;
+            font-size:1.1rem; font-weight:700;
+            cursor:pointer;
+            transition:0.2s;
+        }
+        .submit-btn:hover { transform: translateY(-2px); }
+
+        /* Contact Info */
+        .contact-info { display:flex; flex-direction:column; gap:2rem; }
+
+        .info-card {
+            background:white;
+            padding:2rem;
+            border-radius:20px;
+            box-shadow:0 8px 25px rgba(0,0,0,0.07);
+            transition:0.2s;
+        }
+        .info-card:hover { transform: translateY(-4px); }
+
+        .info-img {
+            width: 100%; border-radius:14px; margin-bottom:1rem;
+        }
+
+        .info-card h3 {
+            font-size:1.4rem; margin-bottom:0.6rem;
+        }
+        .info-card p {
+            color:#636E72; line-height:1.5;
+        }
+
+        .info-card a {
+            color:#6C5CE7; text-decoration:none; font-weight:600;
+        }
+        .info-card a:hover { text-decoration:underline; }
+
+        /* Social Icons */
+        .social-links {
+            margin-top: 2rem;
+            background:white;
+            padding:2rem;
+            border-radius:20px;
+            box-shadow:0 8px 25px rgba(0,0,0,0.07);
+            text-align:center;
+        }
+        .social-links h3 { font-size:1.5rem; margin-bottom:1.2rem; }
+
+        .social-icons { display:flex; justify-content:center; gap:1.5rem; }
+
+        .social-icon img {
+            width:48px; height:48px;
+            transition:0.2s; cursor:pointer;
+        }
+        .social-icon img:hover { transform:scale(1.15); }
+
+        /* Footer */
+        footer {
+            background:#2D3436;
+            color:white;
+            padding:2rem;
+            margin-top:3rem;
+            text-align:center;
+        }
+        footer a { color:#4ECDC4; text-decoration:none; }
+
+        @media (max-width: 900px) {
+            .container { grid-template-columns:1fr; }
+            .hero h1 { font-size: 2.2rem; }
+        }
+    </style>
+</head>
+
+
+<body>
+
+<!-- Navbar -->
+<nav>
+    <div class="nav-container">
+        <div class="logo" onclick="location.href='index.html'">NutriPlan</div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="meals.html">Meal Plans</a></li>
+            <li><a href="progress.html">Progress</a></li>
+            <li><a href="sins.html">Sins Tracker</a></li>
+            <li><a href="logic.html">C Logic</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+    </div>
+</nav>
+
+<!-- Hero -->
+<div class="hero">
+    <h1>Contact NutriPlan</h1>
+    <p>Your questions, ideas, and feedback matter. Reach out anytime!</p>
+</div>
+
+<!-- Main Content -->
+<div class="container">
+
+    <!-- Contact Form -->
+    <div class="contact-form">
+        <h2 class="form-title">Send Us a Message</h2>
+        <p class="form-subtitle">We'll get back within 24–48 hours.</p>
+
+        <form onsubmit="handleSubmit(event)">
+            <div class="form-group">
+                <label>Your Name *</label>
+                <input id="name" required>
+            </div>
+
+            <div class="form-group">
+                <label>Email *</label>
+                <input id="email" type="email" required>
+            </div>
+
+            <div class="form-group">
+                <label>Subject</label>
+                <select id="subject">
+                    <option>General Feedback</option>
+                    <option>Bug Report</option>
+                    <option>Feature Request</option>
+                    <option>Custom Diet Plan</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Your Message *</label>
+                <textarea id="message" required></textarea>
+            </div>
+
+            <button class="submit-btn">Send Message</button>
+        </form>
+    </div>
+
+
+    <!-- Contact Details -->
+    <div class="contact-info">
+
+        <div class="info-card">
+            <img class="info-img" src="https://images.unsplash.com/photo-1525182008055-f88b95ff7980?auto=format&fit=crop&w=900&q=60">
+            <h3>Email Us</h3>
+            <p>For feedback, issues, or custom plans:</p>
+            <a href="mailto:nutriplan.support@gmail.com">nutriplan.support@gmail.com</a>
+        </div>
+
+        <div class="info-card">
+            <img class="info-img" src="https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&w=900&q=60">
+            <h3>Response Time</h3>
+            <p>We usually reply within 24–48 hours on weekdays.</p>
+        </div>
+
+        <!-- Social Section -->
+        <div class="social-links">
+            <h3>Follow Us</h3>
+
+            <div class="social-icons">
+
+                <a class="social-icon" href="#" target="_blank">
+                    <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/instagram.svg">
+                </a>
+
+                <a class="social-icon" href="#" target="_blank">
+                    <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/linkedin.svg">
+                </a>
+
+                <a class="social-icon" href="#" target="_blank">
+                    <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/github.svg">
+                </a>
+
+                <a class="social-icon" href="mailto:nutriplan.support@gmail.com">
+                    <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/gmail.svg">
+                </a>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Footer -->
+<footer>
+    <p>📧 <a href="mailto:nutriplan.support@gmail.com">nutriplan.support@gmail.com</a></p>
+    <p>© 2024 NutriPlan | Built by Shradha</p>
+</footer>
+
+<script>
+function handleSubmit(event){
+    event.preventDefault();
+
+    const entry = {
+        name: name.value,
+        email: email.value,
+        subject: subject.value,
+        message: message.value,
+        time: new Date().toLocaleString()
+    };
+
+    const list = JSON.parse(localStorage.getItem('contact_msgs') || "[]");
+    list.push(entry);
+    localStorage.setItem("contact_msgs", JSON.stringify(list));
+
+    alert("Message Sent Successfully ✔");
+    event.target.reset();
+}
+</script>
+
+</body>
+</html>

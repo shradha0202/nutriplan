@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Your Personalized Meals - NutriPlan</title>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg,#F8F9FA 0%,#E8F5F3 100%);
+            color:#2D3436; min-height:100vh;
+        }
+        nav {
+            background: rgba(255,255,255,0.95); backdrop-filter: blur(10px);
+            padding:1rem 2rem; box-shadow:0 2px 20px rgba(0,0,0,0.1);
+            position:sticky; top:0; z-index:1000;
+        }
+        .nav-container { max-width:1400px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; }
+        .logo { font-size:1.8rem; font-weight:700; background:linear-gradient(135deg,#FF6B6B,#FFB84D); -webkit-background-clip:text; -webkit-text-fill-color:transparent; cursor:pointer; }
+        .nav-links { display:flex; gap:1.5rem; list-style:none; }
+        .nav-links a { text-decoration:none; color:#2D3436; font-weight:500; }
+        .selection-banner { background:linear-gradient(135deg,#6C5CE7,#A29BFE); color:white; padding:1.5rem 2rem; text-align:center; box-shadow:0 4px 15px rgba(108,92,231,0.3); }
+        .selection-tags { display:flex; justify-content:center; gap:1rem; flex-wrap:wrap; margin-top:1rem; }
+        .tag { background:rgba(255,255,255,0.2); padding:0.5rem 1rem; border-radius:20px; font-size:0.95rem; }
+        .container { max-width:1200px; margin:3rem auto; padding:2rem; }
+        .page-title { text-align:center; font-size:2.2rem; margin-bottom:0.5rem; }
+        .subtitle { text-align:center; color:#636E72; margin-bottom:2rem; }
+        .meal-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:1.5rem; }
+        .meal-card { background:#fff; border-radius:16px; overflow:hidden; box-shadow:0 6px 22px rgba(0,0,0,0.08); transition:transform .22s ease; position:relative; }
+        .meal-card:hover { transform: translateY(-6px); }
+        .rank-badge { position:absolute; top:14px; left:14px; background:linear-gradient(135deg,#FFB84D,#FF6B6B); color:white; padding:0.5rem 0.9rem; border-radius:18px; font-weight:700; font-size:0.9rem; z-index:10; }
+        .meal-header { padding:1.6rem; text-align:center; background:linear-gradient(135deg,#4ECDC4,#95E1D3); color:#fff; }
+        .meal-icon { font-size:3.8rem; margin-bottom:0.3rem; display:block; }
+        .meal-header h3 { font-size:1.3rem; margin-bottom:0.2rem; }
+        .hindi-name { font-size:0.95rem; opacity:0.95; }
+        .meal-body { padding:1.6rem; }
+        .calorie-display { text-align:center; font-size:1.6rem; font-weight:800; color:#FF6B6B; margin-bottom:1rem; }
+        .calorie-display span { font-size:0.9rem; color:#636E72; font-weight:500; margin-left:6px; }
+        .macros-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:0.8rem; margin-bottom:1rem; }
+        .macro-item { background:#F8F9FA; padding:0.8rem; border-radius:10px; text-align:center; }
+        .macro-item .value { font-weight:700; font-size:1.05rem; }
+        .macro-item .label { font-size:0.85rem; color:#636E72; margin-top:0.2rem; }
+        .info-row { display:flex; justify-content:space-between; gap:0.5rem; padding:0.8rem; background:linear-gradient(135deg,#FFF5E5,#FFE5E5); border-radius:10px; margin:1rem 0; align-items:center; }
+        .info-item { display:flex; align-items:center; gap:0.6rem; font-size:0.95rem; }
+        .recipe-toggle { width:100%; padding:0.9rem; background:linear-gradient(135deg,#6C5CE7,#A29BFE); color:white; border:none; border-radius:10px; font-weight:700; cursor:pointer; display:flex; justify-content:space-between; align-items:center; }
+        .recipe-content { max-height:0; overflow:hidden; transition:max-height .3s ease; margin-top:0.6rem; }
+        .recipe-content.active { max-height:600px; }
+        .recipe-steps { list-style:none; margin-top:0.6rem; }
+        .recipe-steps li { padding:0.8rem; background:#F8F9FA; margin-bottom:0.6rem; border-radius:8px; position:relative; padding-left:3rem; }
+        .recipe-steps li::before { content:counter(step); counter-increment:step; position:absolute; left:10px; top:50%; transform:translateY(-50%); background:linear-gradient(135deg,#4ECDC4,#95E1D3); color:#fff; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; }
+        .action-buttons { display:flex; gap:0.8rem; margin-top:0.7rem; }
+        .btn { flex:1; padding:0.85rem; border:none; border-radius:10px; font-weight:700; cursor:pointer; color:#fff; }
+        .btn-swap { background:linear-gradient(135deg,#FFB84D,#FF6B6B); }
+        .btn-add { background:linear-gradient(135deg,#4ECDC4,#95E1D3); }
+        .back-btn { display:inline-block; margin-bottom:1.2rem; padding:0.7rem 1.2rem; background:#fff; color:#2D3436; border-radius:10px; text-decoration:none; font-weight:600; box-shadow:0 3px 10px rgba(0,0,0,0.08); }
+        footer { background:#2D3436; color:#fff; text-align:center; padding:2rem; margin-top:3rem; }
+        footer a { color:#4ECDC4; text-decoration:none; }
+        @media(max-width:768px){ .nav-links{display:none} .meal-grid{grid-template-columns:1fr} .info-row{flex-direction:column; align-items:flex-start} .action-buttons{flex-direction:column} }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <div class="logo" onclick="location.href='index.html'">NutriPlan</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="meals.html">Meal Plans</a></li>
+                <li><a href="progress.html">Progress</a></li>
+                <li><a href="sins.html">Sins Tracker</a></li>
+                <li><a href="logic.html">C Logic</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="selection-banner">
+        <h2>Your Personalized Meal Plan</h2>
+        <div class="selection-tags">
+            <span class="tag">🎯 Goal: <span id="displayGoal">Weight Loss</span></span>
+            <span class="tag">🍽️ Diet: <span id="displayDiet">Veg</span></span>
+            <span class="tag">💰 Budget: <span id="displayBudget">Low</span></span>
+            <span class="tag">⏰ Time: <span id="displayTime">Morning</span></span>
+        </div>
+    </div>
+
+    <div class="container">
+        <a class="back-btn" href="index.html">← Change Preferences</a>
+        <h1 class="page-title">Top 3 Meals Ranked Just for You</h1>
+        <p class="subtitle">🔥 Priority Queue — Best nutrition match first (demo)</p>
+
+        <div id="mealGrid" class="meal-grid"></div>
+    </div>
+
+    <footer>
+        <p>📧 <a href="mailto:nutriplan.support@gmail.com">nutriplan.support@gmail.com</a></p>
+        <p>© 2024 NutriPlan | Built by Shradha</p>
+    </footer>
+
+    <script>
+        /*
+         * Fully populated foodDatabase: 2 diets x 2 budgets x 3 times x 5 meals = 60 meals
+         * Each meal: name, hindi, icon, calories, protein, carbs, fats, cost, time (mins), steps
+         */
+        const foodDatabase = {
+            "weight-loss": {
+                "veg": {
+                    "low": {
+                        "morning": [
+                            { name: "Moong Dal Cheela", hindi: "मूंग दाल चीला", icon: "🥞", calories: 180, protein: 12, carbs: 24, fats: 4, cost: 20, time: 15, steps: ["Soak moong dal 2 hrs", "Grind to smooth batter", "Add spices, veggies", "Spread thin on tawa", "Cook both sides lightly"] },
+                            { name: "Oats Upma", hindi: "ओट्स उपमा", icon: "🥣", calories: 210, protein: 8, carbs: 32, fats: 6, cost: 25, time: 12, steps: ["Dry roast oats", "Sauté mustard & curry leaves", "Add veggies & water", "Cook until soft", "Garnish coriander"] },
+                            { name: "Vegetable Poha", hindi: "वेज पोहा", icon: "🍚", calories: 240, protein: 6, carbs: 38, fats: 6, cost: 18, time: 10, steps: ["Rinse poha", "Sauté onions & peas", "Add poha and turmeric", "Mix well", "Garnish with lemon"] },
+                            { name: "Besan Chilla", hindi: "बेसन चीला", icon: "🥞", calories: 200, protein: 10, carbs: 22, fats: 8, cost: 22, time: 12, steps: ["Mix besan batter", "Add grated veggies", "Spread on pan", "Cook both sides", "Serve with chutney"] },
+                            { name: "Vegetable Dalia", hindi: "वेज दलिया", icon: "🍲", calories: 230, protein: 7, carbs: 35, fats: 5, cost: 20, time: 15, steps: ["Roast dalia", "Sauté vegetables", "Add water & dalia", "Simmer until cooked", "Season to taste"] }
+                        ],
+                        "afternoon": [
+                            { name: "Dal Tadka + Roti", hindi: "दाल तड़का + रोटी", icon: "🍛", calories: 320, protein: 14, carbs: 48, fats: 8, cost: 30, time: 25, steps: ["Pressure cook dal", "Prepare tadka", "Mix and simmer", "Roll rotis", "Serve hot"] },
+                            { name: "Mixed Veg Sabzi + Roti", hindi: "मिक्स सब्जी", icon: "🥘", calories: 340, protein: 10, carbs: 50, fats: 9, cost: 35, time: 25, steps: ["Chop seasonal veggies", "Cook with mild spices", "Simmer until tender", "Serve with rotis", "Add lemon"] },
+                            { name: "Masoor Dal + Brown Rice", hindi: "मसूर दाल", icon: "🍚", calories: 360, protein: 16, carbs: 55, fats: 6, cost: 32, time: 22, steps: ["Cook masoor dal", "Prepare simple tadka", "Cook brown rice", "Serve together", "Garnish coriander"] },
+                            { name: "Chana Sundal + Roti", hindi: "चना सुन्डल", icon: "🥗", calories: 330, protein: 15, carbs: 48, fats: 7, cost: 28, time: 25, steps: ["Boil chickpeas", "Sauté with mustard & coconut", "Mix spices", "Serve with rotis", "Add lemon"] },
+                            { name: "Paneer Bhurji (light)", hindi: "पनीर भुर्जी", icon: "🧀", calories: 350, protein: 18, carbs: 30, fats: 12, cost: 45, time: 20, steps: ["Crumble paneer", "Sauté onions & tomatoes", "Add paneer & spices", "Cook 5 mins", "Serve with roti"] }
+                        ],
+                        "evening": [
+                            { name: "Sprouts Salad", hindi: "अंकुरित सलाद", icon: "🥗", calories: 150, protein: 10, carbs: 20, fats: 3, cost: 22, time: 8, steps: ["Mix sprouts & veggies", "Add lemon & chaat masala", "Toss well", "Serve chilled"] },
+                            { name: "Vegetable Soup", hindi: "सब्जी सूप", icon: "🍲", calories: 120, protein: 5, carbs: 18, fats: 3, cost: 18, time: 15, steps: ["Boil mixed veggies", "Blend half", "Add stock & simmer", "Season", "Serve hot"] },
+                            { name: "Dhokla (steamed)", hindi: "ढोकला", icon: "🟨", calories: 160, protein: 7, carbs: 28, fats: 3, cost: 20, time: 20, steps: ["Prepare batter", "Steam dhokla", "Prepare tadka", "Pour over", "Serve with chutney"] },
+                            { name: "Roasted Makhana", hindi: "भुना मखाना", icon: "⚪", calories: 140, protein: 6, carbs: 20, fats: 4, cost: 30, time: 8, steps: ["Dry roast makhana", "Add spices & ghee", "Toss until crisp", "Cool & serve"] },
+                            { name: "Fruit Chaat (light)", hindi: "फ्रूट चाट", icon: "🍎", calories: 160, protein: 3, carbs: 36, fats: 1, cost: 28, time: 7, steps: ["Chop fruits", "Add spices & lemon", "Toss gently", "Serve chilled"] }
+                        ]
+                    },
+                    "moderate": {
+                        "morning": [
+                            { name: "Paneer Paratha (light)", hindi: "पनीर पराठा", icon: "🫓", calories: 320, protein: 15, carbs: 40, fats: 12, cost: 50, time: 20, steps: ["Prepare paneer mix", "Stuff dough", "Roll gently", "Cook on tawa", "Serve with curd"] },
+                            { name: "Idli + Sambar", hindi: "इडली सांभर", icon: "⚪", calories: 280, protein: 10, carbs: 48, fats: 6, cost: 40, time: 18, steps: ["Steam idlis", "Prepare sambar", "Serve hot with chutney"] },
+                            { name: "Vegetable Upma (rich)", hindi: "वेज उपमा", icon: "🥣", calories: 300, protein: 8, carbs: 44, fats: 8, cost: 35, time: 15, steps: ["Roast semolina", "Sauté veggies", "Add water & cook", "Garnish with nuts"] },
+                            { name: "Poha with Peanuts", hindi: "पोहा", icon: "🍚", calories: 290, protein: 8, carbs: 45, fats: 10, cost: 30, time: 12, steps: ["Rinse poha", "Sauté peanuts & veggies", "Mix & season", "Serve with lemon"] },
+                            { name: "Masala Oats", hindi: "मसाला ओट्स", icon: "🥣", calories: 260, protein: 10, carbs: 40, fats: 8, cost: 32, time: 12, steps: ["Roast oats", "Cook with veggies & spices", "Simmer", "Serve hot"] }
+                        ],
+                        "afternoon": [
+                            { name: "Chole Bhature (light bhature)", hindi: "छोले भटूरे", icon: "🍛", calories: 420, protein: 18, carbs: 70, fats: 12, cost: 60, time: 35, steps: ["Soak chickpeas", "Cook chole masala", "Prepare bhature dough & fry", "Serve together"] },
+                            { name: "Palak Paneer + Roti", hindi: "पालक पनीर", icon: "🥬", calories: 380, protein: 16, carbs: 38, fats: 15, cost: 60, time: 22, steps: ["Blanch spinach", "Grind & cook paste", "Add paneer", "Serve with roti"] },
+                            { name: "Mixed Veg Pulao + Raita", hindi: "मिक्स पुलाव", icon: "🍚", calories: 420, protein: 12, carbs: 60, fats: 10, cost: 55, time: 30, steps: ["Sauté spices", "Add rice & veggies", "Cook with stock", "Serve with raita"] },
+                            { name: "Rajma Chawal", hindi: "राजमा चावल", icon: "🍛", calories: 450, protein: 18, carbs: 70, fats: 9, cost: 50, time: 40, steps: ["Soak rajma", "Pressure cook", "Prepare masala", "Serve with rice"] },
+                            { name: "Paneer Tikka Wrap", hindi: "पनीर टिक्का रैप", icon: "🌯", calories: 430, protein: 20, carbs: 45, fats: 18, cost: 70, time: 25, steps: ["Marinate paneer", "Grill tikka", "Assemble in roti with veggies", "Serve"] }
+                        ],
+                        "evening": [
+                            { name: "Masala Corn", hindi: "मसाला कॉर्न", icon: "🌽", calories: 200, protein: 7, carbs: 35, fats: 6, cost: 30, time: 10, steps: ["Boil corn", "Saute with butter & spices", "Serve hot"] },
+                            { name: "Vegetable Spring Rolls (baked)", hindi: "स्प्रिंग रोल्स", icon: "🥟", calories: 240, protein: 6, carbs: 28, fats: 10, cost: 45, time: 20, steps: ["Prepare filling", "Wrap & bake", "Serve with sauce"] },
+                            { name: "Paneer Pakora (air-fried)", hindi: "पनीर पकोड़ा", icon: "🧀", calories: 260, protein: 12, carbs: 20, fats: 14, cost: 55, time: 18, steps: ["Slice paneer", "Dip in batter", "Air-fry until crisp", "Serve with chutney"] },
+                            { name: "Stuffed Paratha (veg)", hindi: "स्टफ्ड पराठा", icon: "🫓", calories: 340, protein: 10, carbs: 48, fats: 12, cost: 45, time: 20, steps: ["Prepare filling", "Stuff dough", "Roll & cook", "Serve with curd"] },
+                            { name: "Bhel Puri (light)", hindi: "भेलपुरी", icon: "🍿", calories: 220, protein: 5, carbs: 40, fats: 6, cost: 35, time: 10, steps: ["Mix puffed rice & sev", "Add chutneys & veggies", "Toss & serve"] }
+                        ]
+                    }
+                },
+                "non-veg": {
+                    "low": {
+                        "morning": [
+                            { name: "Egg Bhurji", hindi: "अंडा भुर्जी", icon: "🍳", calories: 220, protein: 18, carbs: 6, fats: 14, cost: 30, time: 10, steps: ["Beat eggs", "Sauté onions & tomatoes", "Add eggs & scramble", "Serve with toast"] },
+                            { name: "Boiled Eggs + Toast", hindi: "उबले अंडे", icon: "🥚", calories: 240, protein: 16, carbs: 22, fats: 11, cost: 25, time: 8, steps: ["Boil eggs", "Toast bread", "Serve with pepper"] },
+                            { name: "Egg Omelette (veg add)", hindi: "आमलेट", icon: "🍳", calories: 210, protein: 17, carbs: 8, fats: 14, cost: 28, time: 7, steps: ["Beat eggs", "Add veggies", "Cook on pan", "Fold & serve"] },
+                            { name: "Egg Sandwich (light)", hindi: "अंडा सैंडविच", icon: "🥪", calories: 280, protein: 18, carbs: 30, fats: 10, cost: 35, time: 10, steps: ["Boil & mash eggs", "Toast bread", "Assemble sandwich", "Serve"] },
+                            { name: "Smoked Salmon Toast (small)", hindi: "स्मोक्ड सैल्मन", icon: "🐟", calories: 300, protein: 20, carbs: 28, fats: 12, cost: 90, time: 8, steps: ["Toast bread", "Top with smoked salmon", "Add cream cheese & lemon", "Serve"] }
+                        ],
+                        "afternoon": [
+                            { name: "Chicken Curry (light)", hindi: "चिकन करी", icon: "🍗", calories: 380, protein: 32, carbs: 35, fats: 12, cost: 80, time: 35, steps: ["Marinate chicken", "Prepare curry base", "Add chicken & simmer", "Serve with roti or rice"] },
+                            { name: "Egg Curry + Rice", hindi: "अंडा करी", icon: "🥚", calories: 350, protein: 20, carbs: 48, fats: 10, cost: 45, time: 25, steps: ["Boil eggs", "Prepare gravy", "Add eggs & simmer", "Serve with rice"] },
+                            { name: "Tuna Salad + Brown Rice", hindi: "ट्यूना सलाद", icon: "🐟", calories: 340, protein: 28, carbs: 30, fats: 10, cost: 95, time: 20, steps: ["Flake tuna", "Mix with veggies & lemon", "Serve with brown rice"] },
+                            { name: "Keema Matar (light) + Roti", hindi: "कीमा मटर", icon: "🥘", calories: 360, protein: 26, carbs: 40, fats: 12, cost: 70, time: 30, steps: ["Cook mince with spices", "Add peas", "Simmer & serve with roti"] },
+                            { name: "Fish Fry + Salad", hindi: "फिश फ्राय", icon: "🐟", calories: 320, protein: 28, carbs: 10, fats: 14, cost: 110, time: 25, steps: ["Marinate fish", "Pan-fry until crisp", "Serve with salad"] }
+                        ],
+                        "evening": [
+                            { name: "Chicken Salad", hindi: "चिकन सलाद", icon: "🥗", calories: 220, protein: 26, carbs: 12, fats: 8, cost: 70, time: 15, steps: ["Boil chicken", "Shred & toss with veggies", "Add dressing & serve"] },
+                            { name: "Egg Sandwich", hindi: "अंडा सैंडविच", icon: "🥪", calories: 280, protein: 18, carbs: 30, fats: 10, cost: 35, time: 10, steps: ["Boil & mash eggs", "Assemble with veggies", "Toast & serve"] },
+                            { name: "Grilled Chicken (small)", hindi: "ग्रिल्ड चिकन", icon: "🍗", calories: 260, protein: 32, carbs: 5, fats: 12, cost: 85, time: 20, steps: ["Marinate chicken", "Grill until cooked", "Serve with lemon"] },
+                            { name: "Prawn Cocktail (light)", hindi: "प्रॉन कॉकटेल", icon: "🍤", calories: 170, protein: 20, carbs: 8, fats: 6, cost: 120, time: 10, steps: ["Boil prawns", "Mix with light mayo & lemon", "Serve chilled"] },
+                            { name: "Chicken Wrap (small)", hindi: "चिकन रैप", icon: "🌯", calories: 300, protein: 24, carbs: 32, fats: 10, cost: 85, time: 18, steps: ["Grill chicken strips", "Wrap with salad in roti", "Serve"] }
+                        ]
+                    },
+                    "moderate": {
+                        "morning": [
+                            { name: "Masala Omelette + Toast", hindi: "मसाला आमलेट", icon: "🍳", calories: 260, protein: 18, carbs: 22, fats: 14, cost: 40, time: 10, steps: ["Beat eggs with spices", "Cook omelette", "Serve with multigrain toast"] },
+                            { name: "Egg Bhurji with Veg", hindi: "अंडा भुर्जी", icon: "🍳", calories: 260, protein: 20, carbs: 18, fats: 14, cost: 45, time: 12, steps: ["Sauté veggies", "Add eggs & scramble", "Serve with toast"] },
+                            { name: "Chicken Sausage Sandwich", hindi: "चिकन सॉसेज सैंडविच", icon: "🥪", calories: 320, protein: 22, carbs: 34, fats: 12, cost: 70, time: 12, steps: ["Cook sausages", "Assemble sandwich with veggies", "Toast and serve"] },
+                            { name: "Smoked Salmon Bagel", hindi: "स्मोक्ड सैल्मन बेगल", icon: "🐟", calories: 360, protein: 22, carbs: 38, fats: 14, cost: 120, time: 10, steps: ["Toast bagel", "Top cream cheese & smoked salmon", "Serve"] },
+                            { name: "Chicken Upma (fusion)", hindi: "चिकन उपमा", icon: "🍲", calories: 300, protein: 24, carbs: 36, fats: 8, cost: 60, time: 18, steps: ["Cook semolina", "Add shredded chicken & spices", "Simmer and serve"] }
+                        ],
+                        "afternoon": [
+                            { name: "Butter Chicken (small portion) + Rice", hindi: "बटर चिकन", icon: "🍗", calories: 480, protein: 32, carbs: 58, fats: 18, cost: 140, time: 45, steps: ["Marinate chicken", "Cook in tomato-cream gravy", "Serve with rice"] },
+                            { name: "Grilled Fish + Veg Rice", hindi: "ग्रिल्ड फिश", icon: "🐟", calories: 420, protein: 34, carbs: 40, fats: 14, cost: 160, time: 30, steps: ["Marinate fish", "Grill & serve with veg rice"] },
+                            { name: "Chicken Biryani (small)", hindi: "चिकन बिरयानी", icon: "🍛", calories: 520, protein: 32, carbs: 70, fats: 18, cost: 150, time: 50, steps: ["Marinate & cook chicken", "Layer rice & cook dum", "Serve with raita"] },
+                            { name: "Fish Curry + Rice", hindi: "फिश करी", icon: "🐟", calories: 420, protein: 30, carbs: 42, fats: 14, cost: 140, time: 35, steps: ["Prepare curry base", "Add fish & simmer", "Serve with rice"] },
+                            { name: "Chicken Kathi Roll", hindi: "चिकन रोल", icon: "🌯", calories: 450, protein: 30, carbs: 50, fats: 15, cost: 90, time: 20, steps: ["Cook chicken masala", "Roll in paratha with sauces", "Serve hot"] }
+                        ],
+                        "evening": [
+                            { name: "Tandoori Chicken (small)", hindi: "तंदूरी चिकन", icon: "🍗", calories: 320, protein: 34, carbs: 6, fats: 12, cost: 130, time: 30, steps: ["Marinate chicken", "Tandoor/grill until charred", "Serve with salad"] },
+                            { name: "Prawn Stir Fry", hindi: "प्रॉन स्टिर फ्राई", icon: "🍤", calories: 260, protein: 26, carbs: 12, fats: 10, cost: 170, time: 18, steps: ["Sauté prawns with garlic", "Add veggies & sauces", "Serve hot"] },
+                            { name: "Chicken Seekh Kebab", hindi: "सीक कबाब", icon: "🍢", calories: 300, protein: 28, carbs: 8, fats: 14, cost: 120, time: 25, steps: ["Mix mince & spices", "Skewer & grill", "Serve with mint chutney"] },
+                            { name: "Grilled Fish Tacos", hindi: "फिश टैको", icon: "🌮", calories: 340, protein: 28, carbs: 34, fats: 12, cost: 160, time: 20, steps: ["Grill fish", "Assemble in tortillas with slaw", "Serve"] },
+                            { name: "Egg Wrap with Veggies", hindi: "एग रैप", icon: "🌯", calories: 300, protein: 18, carbs: 36, fats: 10, cost: 50, time: 12, steps: ["Make omelette wrap", "Add veggies & sauce", "Roll and serve"] }
+                        ]
+                    }
+                }
+            }
+        };
+
+        // defensive getter
+        function loadUserSelections() {
+            const goal = localStorage.getItem('nutriplan_goal') || 'weight-loss';
+            const filters = JSON.parse(localStorage.getItem('nutriplan_filters')) || { diet: 'veg', budget: 'low', time: 'morning' };
+
+            document.getElementById('displayGoal').textContent = goal.replace('-', ' ');
+            document.getElementById('displayDiet').textContent = filters.diet;
+            document.getElementById('displayBudget').textContent = filters.budget;
+            document.getElementById('displayTime').textContent = filters.time;
+
+            return { goal, ...filters };
+        }
+
+        function getMeals(selections) {
+            try {
+                const meals = foodDatabase?.[selections.goal]?.[selections.diet]?.[selections.budget]?.[selections.time];
+                return Array.isArray(meals) ? meals : [];
+            } catch (e) {
+                console.error(e);
+                return [];
+            }
+        }
+
+        function createMealCard(meal, rank) {
+            const badges = ['🥇 #1 Best Match', '🥈 #2 Great Choice', '🥉 #3 Good Option'];
+            // ensure steps exist
+            const steps = Array.isArray(meal.steps) ? meal.steps : [];
+
+            return `
+                <div class="meal-card">
+                    <span class="rank-badge">${badges[rank-1] ?? `#${rank}`}</span>
+                    <div class="meal-header">
+                        <div class="meal-icon">${meal.icon ?? '🍽️'}</div>
+                        <h3>${meal.name}</h3>
+                        <div class="hindi-name">${meal.hindi}</div>
+                    </div>
+
+                    <div class="meal-body">
+                        <div class="calorie-display">
+                            ${meal.calories} <span>kcal</span>
+                        </div>
+
+                        <div class="macros-grid">
+                            <div class="macro-item">
+                                <div class="value">${meal.protein}g</div>
+                                <div class="label">Protein</div>
+                            </div>
+                            <div class="macro-item">
+                                <div class="value">${meal.carbs}g</div>
+                                <div class="label">Carbs</div>
+                            </div>
+                            <div class="macro-item">
+                                <div class="value">${meal.fats}g</div>
+                                <div class="label">Fats</div>
+                            </div>
+                        </div>
+
+                        <div class="info-row">
+                            <div class="info-item">💰 <strong>₹${meal.cost}</strong></div>
+                            <div class="info-item">⏱️ <strong>${meal.time} mins</strong></div>
+                        </div>
+
+                        <button class="recipe-toggle" onclick="toggleRecipe(${rank})">👨‍🍳 View Recipe Steps ▼</button>
+
+                        <div id="recipe${rank}" class="recipe-content">
+                            <ul class="recipe-steps">
+                                ${steps.map(s => `<li>${s}</li>`).join('')}
+                            </ul>
+                        </div>
+
+                        <div class="action-buttons">
+                            <button class="btn btn-swap" onclick="swapMeal(${rank})">🔄 Swap Meal</button>
+                            <button class="btn btn-add" onclick="addMeal('${escapeQuotes(meal.name)}', ${meal.calories}, ${meal.protein}, ${meal.carbs})">✅ Add to Log</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function escapeQuotes(str) {
+            return (''+str).replace(/'/g,"\\'").replace(/"/g,'\\"');
+        }
+
+        function toggleRecipe(rank) {
+            const el = document.getElementById(`recipe${rank}`);
+            if (!el) return;
+            el.classList.toggle('active');
+        }
+
+        function swapMeal(rank) {
+            alert(`🔄 Swapping meal #${rank} — showing an alternative (demo).`);
+            // In a real app: compute alternative using graph or similarity; here it's a placeholder
+        }
+
+        function addMeal(name, calories, protein = 0, carbs = 0) {
+            const key = 'nutriplan_meal_log';
+            const log = JSON.parse(localStorage.getItem(key) || '[]');
+            log.push({ name, calories, protein, carbs, date: new Date().toLocaleString(), ts: Date.now() });
+            localStorage.setItem(key, JSON.stringify(log));
+            alert(`✅ ${name} (${calories} kcal) added to your meal log!`);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const selections = loadUserSelections();
+            const meals = getMeals(selections);
+            const mealGrid = document.getElementById('mealGrid');
+
+            mealGrid.innerHTML = ''; // clear
+
+            if (!meals || meals.length === 0) {
+                mealGrid.innerHTML = `
+                    <div style="grid-column:1/-1;text-align:center;padding:2.5rem;">
+                        <h2>😅 Oops! No meals found</h2>
+                        <p style="margin-top:1rem;">Try changing filters or preferences.</p>
+                        <a href="index.html" style="display:inline-block;margin-top:1rem;padding:0.9rem 1.6rem;background:linear-gradient(135deg,#FF6B6B,#FFB84D);color:#fff;border-radius:10px;text-decoration:none;font-weight:700;">🔙 Back to Home</a>
+                    </div>
+                `;
+                return;
+            }
+
+            // Show top 3 ranked by a simple heuristic: lower calories preferred for weight-loss
+            // For demo keep it simple: sort by calories ascending, then protein desc
+            const sorted = meals.slice().sort((a,b) => (a.calories - b.calories) || (b.protein - a.protein));
+            sorted.slice(0,3).forEach((m, idx) => {
+                mealGrid.innerHTML += createMealCard(m, idx+1);
+            });
+        });
+    </script>
+</body>
+</html>

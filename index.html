@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>NutriPlan — Smart Nutrition for Real Indian Diets</title>
+
+<!-- Inter font for polished typography -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg-1: #F6F9FB;
+    --glass: rgba(255,255,255,0.55);
+    --muted: #6b7280;
+    --accent-1: #6C5CE7; /* purple */
+    --accent-2: #A29BFE; /* light purple */
+    --accent-3: #FF6B6B; /* coral */
+    --glass-border: rgba(255,255,255,0.6);
+    --card-shadow: 0 8px 30px rgba(16,24,40,0.06);
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    background: linear-gradient(135deg, #F8F9FA 0%, #E8F5F3 100%);
+    color: #111827;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    line-height:1.4;
+  }
+
+  /* NAV */
+  nav{
+    position:sticky;top:0;z-index:40;
+    padding:18px 28px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.7), rgba(255,255,255,0.6));
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(15,23,42,0.03);
+    box-shadow: 0 6px 20px rgba(16,24,40,0.03);
+  }
+  .nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px}
+  .brand{
+    display:flex;align-items:center;gap:12px;cursor:pointer;text-decoration:none;color:inherit
+  }
+  .brand-logo{
+    width:46px;height:46px;border-radius:10px;
+    background: linear-gradient(135deg,var(--accent-3),#FFB84D);
+    display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:18px;
+    box-shadow: 0 6px 20px rgba(255,107,107,0.12);
+  }
+  .brand-title{font-weight:700;font-size:18px;letter-spacing:-0.2px}
+  .nav-links{display:flex;gap:18px;align-items:center}
+  .nav-links a{color:var(--muted);text-decoration:none;font-weight:600}
+  .nav-links a:hover{color:var(--accent-3)}
+
+  /* HERO */
+  .hero {
+    max-width:1400px;margin:36px auto;padding:36px;border-radius:18px;
+    position:relative; overflow:hidden;
+    display:grid; grid-template-columns: 1fr 420px; gap:28px; align-items:center;
+  }
+  .hero-visual{
+    border-radius:16px;overflow:hidden;position:relative;height:360px;
+    background-image: linear-gradient(0deg, rgba(6,10,15,0.28), rgba(6,10,15,0.12)), url('https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=1500&q=60');
+    background-size:cover;background-position:center;
+    box-shadow: var(--card-shadow);
+  }
+  .hero-visual::after{
+    content:"";position:absolute;inset:0;background:linear-gradient(135deg, rgba(108,92,231,0.25), rgba(78,205,196,0.06));
+    mix-blend-mode: overlay;
+  }
+  .hero-copy{
+    padding:12px 6px;
+  }
+  .kicker{
+    display:inline-block;padding:6px 10px;border-radius:999px;background:linear-gradient(90deg,var(--accent-1),var(--accent-2));color:white;font-weight:700;margin-bottom:16px;font-size:13px;
+    box-shadow: 0 6px 20px rgba(108,92,231,0.08);
+  }
+  .hero h1{font-size:2.2rem;margin-bottom:10px;line-height:1.06}
+  .hero p.lead{color:var(--muted);margin-bottom:14px;font-size:1rem}
+  .hero p.sub{color:var(--accent-3);font-weight:700;margin-bottom:18px}
+
+  .hero-cta{display:flex;gap:12px;align-items:center}
+  .btn-primary{
+    background:linear-gradient(135deg,var(--accent-1),var(--accent-2));
+    color:white;padding:12px 18px;border-radius:12px;border:0;font-weight:700;cursor:pointer;box-shadow:0 10px 30px rgba(108,92,231,0.12);
+  }
+  .btn-ghost{background:transparent;border:1px solid rgba(16,24,40,0.06);padding:10px 14px;border-radius:10px;color:var(--muted);font-weight:700;cursor:pointer}
+
+  /* SELECTION */
+  .selection {max-width:1200px;margin:18px auto 48px;padding:18px}
+  .section-title{font-size:1.3rem;font-weight:700;margin-bottom:16px}
+  .goal-grid{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;
+  }
+
+  .goal-card{
+    background: linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.4));
+    border-radius:14px;padding:16px;display:flex;gap:14px;align-items:center;cursor:pointer;
+    border:1px solid rgba(255,255,255,0.6);box-shadow:var(--card-shadow);transition:transform .22s ease,box-shadow .22s ease;
+    backdrop-filter: blur(8px);
+  }
+  .goal-card:hover{transform:translateY(-6px);box-shadow:0 18px 45px rgba(16,24,40,0.08)}
+  .goal-card.selected{outline:3px solid rgba(108,92,231,0.15);transform:scale(1.02)}
+
+  .goal-thumb{
+    width:66px;height:66px;border-radius:50%;overflow:hidden;flex:0 0 66px;border:2px solid rgba(255,255,255,0.6);
+    display:flex;align-items:center;justify-content:center;background:#fff;
+  }
+  .goal-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+
+  .goal-meta h3{font-size:1.05rem;margin-bottom:6px}
+  .goal-meta p{color:var(--muted);font-size:0.9rem}
+
+  /* FILTERS - glass panel */
+  .filters-panel{
+    margin-top:20px;padding:18px;border-radius:14px;background:linear-gradient(180deg, rgba(255,255,255,0.55), rgba(255,255,255,0.45));
+    border:1px solid rgba(255,255,255,0.6);backdrop-filter: blur(8px);box-shadow:var(--card-shadow);max-height:0;overflow:hidden;opacity:0;transform:translateY(8px);transition:all .38s ease;
+  }
+  .filters-panel.active{max-height:800px;opacity:1;transform:translateY(0);padding:22px}
+
+  .filters-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+
+  .filter-group label{display:block;font-weight:700;margin-bottom:8px}
+  .filter-options{display:flex;gap:10px;flex-wrap:wrap}
+  .pill{
+    padding:8px 12px;border-radius:999px;border:1px solid rgba(16,24,40,0.06);background:#fff;font-weight:600;cursor:pointer;
+    transition:all .18s ease;
+  }
+  .pill.selected{background:linear-gradient(90deg,#4ECDC4,#95E1D3);color:white;border-color:transparent;box-shadow:0 8px 18px rgba(78,205,196,0.12)}
+
+  .cta-row{margin-top:18px;text-align:center}
+  .cta-cta{display:inline-block;padding:14px 26px;border-radius:999px;background:linear-gradient(135deg,var(--accent-1),var(--accent-2));color:white;font-weight:800;border:0;cursor:pointer;opacity:.95}
+  .cta-cta.disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
+
+  /* FOOTER */
+  footer{margin-top:48px;padding:28px;background: #111827;color:white;text-align:center;border-top-left-radius:20px;border-top-right-radius:20px}
+  footer a{color:#9AE6B4;text-decoration:none;font-weight:600}
+
+  /* RESPONSIVE */
+  @media (max-width:1100px){
+    .hero{grid-template-columns:1fr;gap:20px}
+    .hero-visual{height:260px}
+  }
+  @media (max-width:680px){
+    .nav-links{display:none}
+    .hero h1{font-size:1.6rem}
+    .goal-grid{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+  }
+</style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-inner">
+      <a class="brand" href="index.html" aria-label="NutriPlan home">
+        <div class="brand-logo">NP</div>
+        <div class="brand-title">NutriPlan</div>
+      </a>
+
+      <div class="nav-links" role="navigation" aria-label="Main navigation">
+        <a href="index.html">Home</a>
+        <a href="meals.html">Meals</a>
+        <a href="progress.html">Progress</a>
+        <a href="sins.html">Sins</a>
+        <a href="logic.html">C Logic</a>
+        <a href="contact.html">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <main>
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <div class="kicker">Smart · Practical · Indian</div>
+        <h1 id="hero-title">Nutrition that understands Indian food — not boring salad bowls</h1>
+        <p class="lead">NutriPlan matches real Indian meals to your goals using data-structures-backed ranking. Dal, roti, paneer — thoughtfully portioned.</p>
+        <p class="sub">Built for students and busy professionals.</p>
+
+        <div class="hero-cta" style="margin-top:18px">
+          <button class="btn-primary" onclick="document.getElementById('goals').scrollIntoView({behavior:'smooth'})">Get Started</button>
+          <button class="btn-ghost" onclick="window.location.href='meals.html'">Browse Demo Meals</button>
+        </div>
+      </div>
+
+      <div class="hero-visual" role="img" aria-label="Healthy Indian meal and ingredients"></div>
+    </section>
+
+    <!-- SELECTION -->
+    <section id="goals" class="selection" aria-labelledby="step-title">
+      <h2 id="step-title" class="section-title">Step 1 — What's your primary goal?</h2>
+
+      <div class="goal-grid" id="goalGrid">
+
+        <!-- Cards (images served from Unsplash CDN for fast load) -->
+        <article class="goal-card" data-goal="weight-loss" tabindex="0" role="button" aria-pressed="false">
+          <div class="goal-thumb"><img src="https://cathe.com/wp-content/uploads/2022/02/shutterstock_597559355.jpg" alt="Healthy salad bowl"></div>
+          <div class="goal-meta">
+            <h3>Weight Loss</h3>
+            <p>Fat loss with sustainable Indian meals.</p>
+          </div>
+        </article>
+
+        <article class="goal-card" data-goal="muscle-gain" tabindex="0" role="button" aria-pressed="false">
+          <div class="goal-thumb"><img src="https://images.unsplash.com/photo-1551183053-bf91a1d81141?auto=format&fit=crop&w=800&q=60" alt="Protein meals"></div>
+          <div class="goal-meta">
+            <h3>Muscle Gain</h3>
+            <p>Protein-forward plans to build strength.</p>
+          </div>
+        </article>
+
+        <article class="goal-card" data-goal="maintain" tabindex="0" role="button" aria-pressed="false">
+          <div class="goal-thumb"><img src="http://www.womenfitness.net/wp/wp-content/uploads/2016/11/Weight-Maintenance-Strategy.jpg" alt="Balanced meals"></div>
+          <div class="goal-meta">
+            <h3>Maintain</h3>
+            <p>Keep a consistent, healthy routine.</p>
+          </div>
+        </article>
+
+        <article class="goal-card" data-goal="pcod" tabindex="0" role="button" aria-pressed="false">
+          <div class="goal-thumb"><img src="https://images.unsplash.com/photo-1506806732259-39c2d0268443?auto=format&fit=crop&w=800&q=60" alt="Gut-friendly foods"></div>
+          <div class="goal-meta">
+            <h3>PCOD-Friendly</h3>
+            <p>Hormone-supporting meal patterns.</p>
+          </div>
+        </article>
+
+        <article class="goal-card" data-goal="eat-better" tabindex="0" role="button" aria-pressed="false">
+          <div class="goal-thumb"><img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=60" alt="Fresh vegetables"></div>
+          <div class="goal-meta">
+            <h3>Just Eat Better</h3>
+            <p>Small, sustainable improvements.</p>
+          </div>
+        </article>
+
+      </div> <!-- goal-grid -->
+
+      <!-- FILTERS (initially hidden - glass panel) -->
+      <div class="filters-panel" id="filtersPanel" aria-hidden="true" role="region" aria-label="Filters">
+        <h3 style="margin-bottom:12px;font-size:1.05rem;font-weight:800">Step 2 — Tell us a bit more</h3>
+
+        <div class="filters-grid">
+
+          <div>
+            <label>Diet</label>
+            <div class="filter-options" role="list" aria-label="Diet options">
+              <button class="pill" data-filter="diet" data-value="veg">Veg</button>
+              <button class="pill" data-filter="diet" data-value="non-veg">Non-Veg</button>
+              <button class="pill" data-filter="diet" data-value="egg">Egg</button>
+            </div>
+          </div>
+
+          <div>
+            <label>Budget</label>
+            <div class="filter-options" role="list" aria-label="Budget options">
+              <button class="pill" data-filter="budget" data-value="low">Low</button>
+              <button class="pill" data-filter="budget" data-value="moderate">Moderate</button>
+            </div>
+          </div>
+
+          <div>
+            <label>Meal Time</label>
+            <div class="filter-options" role="list" aria-label="Time options">
+              <button class="pill" data-filter="time" data-value="morning">Morning</button>
+              <button class="pill" data-filter="time" data-value="afternoon">Afternoon</button>
+              <button class="pill" data-filter="time" data-value="evening">Evening</button>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="cta-row" style="margin-top:18px">
+          <button id="startBtn" class="cta-cta disabled" aria-disabled="true">Show Meal Options</button>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div style="max-width:1100px;margin:0 auto;padding:0 18px">
+      <p style="margin-bottom:8px">Questions? Email <a href="mailto:nutriplan.support@gmail.com">nutriplan.support@gmail.com</a></p>
+      <p style="opacity:0.86;font-size:14px">© 2024 NutriPlan — Built by Shradha</p>
+    </div>
+  </footer>
+
+<script>
+  // State
+  let selectedGoal = null;
+  const selectedFilters = { diet: null, budget: null, time: null };
+
+  // Elements
+  const goalCards = document.querySelectorAll('.goal-card');
+  const filtersPanel = document.getElementById('filtersPanel');
+  const pillButtons = document.querySelectorAll('.pill');
+  const startBtn = document.getElementById('startBtn');
+
+  // helper: set ARIA pressed state
+  function setPressed(el, pressed){
+    el.setAttribute('aria-pressed', pressed ? 'true' : 'false');
+  }
+
+  // Goal selection (click + keyboard)
+  goalCards.forEach(card => {
+    card.addEventListener('click', () => selectGoal(card));
+    card.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectGoal(card); }
+    });
+  });
+
+  function selectGoal(card){
+    goalCards.forEach(c => { c.classList.remove('selected'); setPressed(c,false); });
+    card.classList.add('selected');
+    setPressed(card,true);
+    selectedGoal = card.dataset.goal;
+
+    // reveal filters panel
+    filtersPanel.classList.add('active');
+    filtersPanel.setAttribute('aria-hidden','false');
+    // focus first filter for accessibility
+    setTimeout(()=> {
+      const firstPill = document.querySelector('.pill');
+      if(firstPill) firstPill.focus();
+    }, 220);
+    // smooth scroll
+    filtersPanel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  // Pill selection (single-select per group)
+  pillButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const type = btn.dataset.filter;
+      // deselect other pills in same group
+      document.querySelectorAll(`.pill[data-filter="${type}"]`).forEach(p => p.classList.remove('selected'));
+      btn.classList.add('selected');
+      selectedFilters[type] = btn.dataset.value;
+      checkReady();
+    });
+    // keyboard accessibility
+    btn.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); btn.click(); }
+    });
+  });
+
+  function checkReady(){
+    if(selectedFilters.diet && selectedFilters.budget && selectedFilters.time){
+      startBtn.classList.remove('disabled');
+      startBtn.removeAttribute('aria-disabled');
+    } else {
+      startBtn.classList.add('disabled');
+      startBtn.setAttribute('aria-disabled','true');
+    }
+  }
+
+  // Start button: save into localStorage and navigate to meals
+  startBtn.addEventListener('click', () => {
+    if(startBtn.classList.contains('disabled')) return;
+    localStorage.setItem('nutriplan_goal', selectedGoal || 'weight-loss');
+    localStorage.setItem('nutriplan_filters', JSON.stringify(selectedFilters));
+    // small success micro-interaction
+    startBtn.textContent = 'Preparing your meals...';
+    startBtn.disabled = true;
+    setTimeout(()=> location.href = 'meals.html', 600);
+  });
+
+  // initialize accessible focus outline for keyboard users only
+  (function keyboardOutline(){
+    function handleFirstTab(e) {
+      if(e.key === 'Tab'){
+        document.documentElement.classList.add('user-is-tabbing');
+        window.removeEventListener('keydown', handleFirstTab);
+      }
+    }
+    window.addEventListener('keydown', handleFirstTab);
+  })();
+</script>
+
+</body>
+</html>

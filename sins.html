@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cheat Meals Sins Tracker - NutriPlan</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #F8F9FA 0%, #E8F5F3 100%);
+            color: #2D3436;
+            min-height: 100vh;
+        }
+
+        /* Navbar */
+        nav {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #FF6B6B, #FFB84D);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            cursor: pointer;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #2D3436;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #FF6B6B;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #FF6B6B, #FFB84D);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(255, 107, 107, 0.3);
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 3rem auto;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 2rem;
+        }
+
+        /* Left Side - Add Cheat Section */
+        .add-section {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: #2D3436;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-subtitle {
+            color: #636E72;
+            margin-bottom: 2rem;
+            font-size: 1rem;
+        }
+
+        /* Quick Add Buttons */
+        .quick-add-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .junk-btn {
+            padding: 1rem;
+            border: 2px solid #DFE6E9;
+            background: white;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .junk-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.3);
+            border-color: #FF6B6B;
+        }
+
+        .junk-btn .icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .junk-btn .name {
+            font-weight: 600;
+            color: #2D3436;
+            font-size: 0.9rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .junk-btn .calories {
+            color: #FF6B6B;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        /* Custom Form */
+        .custom-form {
+            background: #F8F9FA;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-top: 2rem;
+        }
+
+        .custom-form h3 {
+            margin-bottom: 1.5rem;
+            color: #2D3436;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #2D3436;
+            font-weight: 600;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #DFE6E9;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #FF6B6B;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #FF6B6B, #FFB84D);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        /* Right Side - Stack Display */
+        .stack-section {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 100px;
+            max-height: calc(100vh - 120px);
+            overflow-y: auto;
+        }
+
+        .stack-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .stack-header h2 {
+            font-size: 1.8rem;
+            color: #2D3436;
+            margin-bottom: 0.5rem;
+        }
+
+        .stack-indicator {
+            font-size: 0.9rem;
+            color: #636E72;
+            margin-bottom: 1rem;
+        }
+
+        /* Total Stats */
+        .total-stats {
+            background: linear-gradient(135deg, #FFE5E5, #FFF5E5);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .total-stats .big-number {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #FF6B6B;
+            margin-bottom: 0.5rem;
+        }
+
+        .total-stats .label {
+            color: #636E72;
+            font-size: 0.9rem;
+        }
+
+        .delay-warning {
+            background: #FF6B6B;
+            color: white;
+            padding: 0.8rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        /* Stack Container */
+        .stack-container {
+            position: relative;
+            min-height: 300px;
+        }
+
+        .stack-empty {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #636E72;
+        }
+
+        .stack-empty .icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .stack-empty h3 {
+            margin-bottom: 0.5rem;
+            color: #4ECDC4;
+        }
+
+        /* Stack Items */
+        .stack-items {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .sin-card {
+            background: linear-gradient(135deg, #FFE5E5, #FFF5E5);
+            border: 2px solid #FF6B6B;
+            border-radius: 15px;
+            padding: 1.5rem;
+            position: relative;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .sin-card.top {
+            border-width: 3px;
+            box-shadow: 0 4px 20px rgba(255, 107, 107, 0.3);
+        }
+
+        .sin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+
+        .sin-badge {
+            background: #FF6B6B;
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        .sin-info {
+            flex: 1;
+        }
+
+        .sin-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #2D3436;
+            margin-bottom: 0.3rem;
+        }
+
+        .sin-icon {
+            font-size: 2rem;
+            margin-right: 0.5rem;
+        }
+
+        .sin-calories {
+            font-size: 1.5rem;
+            color: #FF6B6B;
+            font-weight: bold;
+        }
+
+        .sin-time {
+            font-size: 0.8rem;
+            color: #636E72;
+            margin-top: 0.5rem;
+        }
+
+        .sin-consequence {
+            background: rgba(255, 107, 107, 0.1);
+            padding: 0.8rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: #2D3436;
+        }
+
+        /* Action Buttons */
+        .stack-actions {
+            margin-top: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .action-btn {
+            padding: 1rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .undo-btn {
+            background: linear-gradient(135deg, #4ECDC4, #95E1D3);
+            color: white;
+        }
+
+        .undo-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(78, 205, 196, 0.4);
+        }
+
+        .undo-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .clear-btn {
+            background: linear-gradient(135deg, #636E72, #2D3436);
+            color: white;
+        }
+
+        .clear-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(45, 52, 54, 0.4);
+        }
+
+        /* Footer */
+        footer {
+            background: #2D3436;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 4rem;
+        }
+
+        footer p {
+            margin: 0.5rem 0;
+        }
+
+        footer a {
+            color: #4ECDC4;
+            text-decoration: none;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 968px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+
+            .stack-section {
+                position: relative;
+                top: 0;
+                max-height: none;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .quick-add-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo" onclick="window.location.href='index.html'">NutriPlan</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="meals.html">Meal Plans</a></li>
+                <li><a href="progress.html">Progress</a></li>
+                <li><a href="sins.html">Sins Tracker</a></li>
+                <li><a href="logic.html">C Logic</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <h1>🍕 Cheat Meals Sin Tracker</h1>
+        <p>Track your junk food using Stack (LIFO) data structure - Last sin in, first to undo!</p>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Left Side - Add Cheat -->
+        <div class="add-section">
+            <h2 class="section-title">
+                <span>😈</span> Add Your Sins
+            </h2>
+            <p class="section-subtitle">Quick-add common junk foods or enter custom items</p>
+
+            <!-- Quick Add Grid -->
+            <div class="quick-add-grid">
+                <button class="junk-btn" onclick="addQuickCheat('Pizza', '🍕', 700)">
+                    <div class="icon">🍕</div>
+                    <div class="name">Pizza</div>
+                    <div class="calories">700 kcal</div>
+                </button>
+                <button class="junk-btn" onclick="addQuickCheat('Burger', '🍔', 550)">
+                    <div class="icon">🍔</div>
+                    <div class="name">Burger</div>
+                    <div class="calories">550 kcal</div>
+                </button>
+                <button class="junk-btn" onclick="addQuickCheat('Maggi', '🍜', 400)">
+                    <div class="icon">🍜</div>
+                    <div class="name">Maggi</div>
+                    <div class="calories">400 kcal</div>
+                </button>
+                <button class="junk-btn" onclick="addQuickCheat('French Fries', '🍟', 320)">
+                    <div class="icon">🍟</div>
+                    <div class="name">Fries</div>
+                    <div class="calories">320 kcal</div>
+                </button>
+                <button class="junk-btn" onclick="addQuickCheat('Ice Cream', '🍦', 280)">
+                    <div class="icon">🍦</div>
+                    <div class="name">Ice Cream</div>
+                    <div class="calories">280 kcal</div>
+                </button>
+                <button class="junk-btn" onclick="addQuickCheat('Samosa', '🥟', 250)">
+                    <div class="icon">🥟</div>
+                    <div class="name">Samosa</div>
+                    <div class="calories">250 kcal</div>
+                </button>
+                <button class="junk-btn" onclick="addQuickCheat('Parle-G', '🍪', 480)">
+                    <div class="icon">🍪</div>
+                    <div class="name">Parle-G Pack</div>
+                    <div class="calories">480 kcal</div>
+                </button>
+                <button class="junk-btn" onclick="addQuickCheat('Cola', '🥤', 150)">
+                    <div class="icon">🥤</div>
+                    <div class="name">Cola</div>
+                    <div class="calories">150 kcal</div>
+                </button>
+                <button class="junk-btn" onclick="addQuickCheat('Pani Puri', '🫓', 180)">
+                    <div class="icon">🫓</div>
+                    <div class="name">Pani Puri</div>
+                    <div class="calories">180 kcal</div>
+                </button>
+                <button class="junk-btn" onclick="addQuickCheat('Vada Pav', '🥙', 300)">
+                    <div class="icon">🥙</div>
+                    <div class="name">Vada Pav</div>
+                    <div class="calories">300 kcal</div>
+                </button>
+                <button class="junk-btn" onclick="addQuickCheat('Chips Packet', '🥔', 540)">
+                    <div class="icon">🥔</div>
+                    <div class="name">Chips</div>
+                    <div class="calories">540 kcal</div>
+                </button>
+                <button class="junk-btn" onclick="addQuickCheat('Chocolate', '🍫', 450)">
+                    <div class="icon">🍫</div>
+                    <div class="name">Chocolate</div>
+                    <div class="calories">450 kcal</div>
+                </button>
+            </div>
+
+            <!-- Custom Form -->
+            <div class="custom-form">
+                <h3>📝 Add Custom Cheat Meal</h3>
+                <form id="customCheatForm" onsubmit="addCustomCheat(event)">
+                    <div class="form-group">
+                        <label>Food Name</label>
+                        <input type="text" id="customName" placeholder="e.g., Biryani" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Calories (kcal)</label>
+                        <input type="number" id="customCalories" placeholder="e.g., 600" required min="1">
+                    </div>
+                    <button type="submit" class="submit-btn">➕ Add to Sin Stack</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Right Side - Stack Display -->
+        <div class="stack-section">
+            <div class="stack-header">
+                <h2>📚 Your Sin Stack</h2>
+                <p class="stack-indicator">🔝 TOP (Most Recent) → BOTTOM (Oldest)</p>
+            </div>
+
+            <!-- Total Stats -->
+            <div class="total-stats">
+                <div class="big-number" id="totalCalories">0</div>
+                <div class="label">Total Sin Calories</div>
+                <div class="delay-warning" id="delayWarning">
+                    ⚠️ Goal delayed by ~0 days
+                </div>
+            </div>
+
+            <!-- Stack Container -->
+            <div class="stack-container">
+                <div class="stack-empty" id="emptyState">
+                    <div class="icon">🎉</div>
+                    <h3>No Sins Yet!</h3>
+                    <p>You're on track. Keep it up!</p>
+                </div>
+
+                <div class="stack-items" id="stackItems" style="display: none;">
+                    <!-- Sin cards will be added here -->
+                </div>
+            </div>
+
+            <!-- Stack Actions -->
+            <div class="stack-actions">
+                <button class="action-btn undo-btn" id="undoBtn" onclick="undoLastSin()" disabled>
+                    ⏪ Undo Last Sin (POP)
+                </button>
+                <button class="action-btn clear-btn" id="clearBtn" onclick="clearAllSins()" disabled>
+                    🗑️ Clear All Sins
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>📧 <a href="mailto:nutriplan.support@gmail.com">nutriplan.support@gmail.com</a></p>
+        <p>© 2024 NutriPlan | Built by Shradha</p>
+    </footer>
+
+    <script>
+        // Stack implementation using localStorage
+        let sinStack = [];
+
+        // Load sins from localStorage on page load
+        function loadSins() {
+            const stored = localStorage.getItem('nutriplan_sins');
+            if (stored) {
+                sinStack = JSON.parse(stored);
+            }
+            updateDisplay();
+        }
+
+        // Save sins to localStorage
+        function saveSins() {
+            localStorage.setItem('nutriplan_sins', JSON.stringify(sinStack));
+        }
+
+        // Push (add) cheat to stack
+        function pushSin(name, icon, calories) {
+            const sin = {
+                name: name,
+                icon: icon,
+                calories: calories,
+                timestamp: Date.now(),
+                date: new Date().toLocaleString()
+            };
+
+            sinStack.unshift(sin); // Add to beginning (top of stack)
+            saveSins();
+            updateDisplay();
+
+            // Show feedback
+            showNotification(`❌ ${name} added to sin stack! (+${calories} kcal)`);
+        }
+
+        // Pop (undo) last cheat from stack
+        function popSin() {
+            if (sinStack.length === 0) return null;
+
+            const removed = sinStack.shift(); // Remove from beginning (top)
+            saveSins();
+            updateDisplay();
+
+            return removed;
+        }
+
+        // Quick add cheat
+        function addQuickCheat(name, icon, calories) {
+            pushSin(name, icon, calories);
+        }
+
+        // Add custom cheat
+        function addCustomCheat(event) {
+            event.preventDefault();
+
+            const name = document.getElementById('customName').value;
+            const calories = parseInt(document.getElementById('customCalories').value);
+
+            pushSin(name, '🍽️', calories);
+
+            // Reset form
+            document.getElementById('customCheatForm').reset();
+        }
+
+        // Undo last sin
+        function undoLastSin() {
+            const removed = popSin();
+            if (removed) {
+                showNotification(`✅ Undone: ${removed.name} (-${removed.calories} kcal)`);
+            }
+        }
+
+        // Clear all sins
+        function clearAllSins() {
+            if (confirm('Are you sure you want to clear all sins? This cannot be undone.')) {
+                sinStack = [];
+                saveSins();
+                updateDisplay();
+                showNotification('🗑️ All sins cleared!');
+            }
+        }
+
+        // Update display
+        function updateDisplay() {
+            const stackItems = document.getElementById('stackItems');
+            const emptyState = document.getElementById('emptyState');
+            const undoBtn = document.getElementById('undoBtn');
+            const clearBtn = document.getElementById('clearBtn');
+
+            // Calculate total calories
+            const totalCal = sinStack.reduce((sum, sin) => sum + sin.calories, 0);
+            document.getElementById('totalCalories').textContent = totalCal;
+
+            // Calculate days delayed (rough estimate: 500 kcal = 1 day delay)
+            const daysDelayed = Math.floor(totalCal / 500);
+            document.getElementById('delayWarning').textContent = 
+                `⚠️ Goal delayed by ~${daysDelayed} day${daysDelayed !== 1 ? 's' : ''}`;
+
+            // Show/hide empty state
+            if (sinStack.length === 0) {
+                emptyState.style.display = 'block';
+                stackItems.style.display = 'none';
+                undoBtn.disabled = true;
+                clearBtn.disabled = true;
+            } else {
+                emptyState.style.display = 'none';
+                stackItems.style.display = 'flex';
+                undoBtn.disabled = false;
+                clearBtn.disabled = false;
+
+                // Render stack items
+                stackItems.innerHTML = sinStack.map((sin, index) => {
+                    const isTop = index === 0;
+                    const daysDelay = Math.floor(sin.calories / 500);
+
+                    return `
+                        <div class="sin-card ${isTop ? 'top' : ''}">
+                            <div class="sin-header">
+                                <div class="sin-info">
+                                    <div class="sin-name">
+                                        <span class="sin-icon">${sin.icon}</span>
+                                        ${sin.name}
+                                    </div>
+                                    <div class="sin-calories">${sin.calories} kcal</div>
+                                    <div class="sin-time">📅 ${sin.date}</div>
+                                </div>
+                                ${isTop ? '<span class="sin-badge">TOP</span>' : ''}
+                            </div>
+                            <div class="sin-consequence">
+                                🔥 ${sin.calories} kcal = Goal delayed by ~${daysDelay} day${daysDelay !== 1 ? 's' : ''}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+        }
+
+        // Show notification
+        function showNotification(message) {
+            alert(message);
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadSins();
+        });
+    </script>
+</body>
+</html>
